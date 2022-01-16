@@ -86,19 +86,30 @@ set_part_answer=0
             ################################### Get Information
             
             set_part(){
+
                 read -p " Which part would you want set? 1: Bastion Set; 2: Endpoint Set; 3: Bastion launch " set_part_answer
 
-                if [[ $set_part_answer=="1"]]
+                if [[ $set_part_answer -eq 1 ]]
                 then
-                elif [[ $set_part_answer=="2"]]
+                    echo "part 1"
+                    
+                    # Launch Ask Function 
+                    # $set_part_answer will condition the part Ask Function used
+                    Ask
+
+                elif [[ $set_part_answer -eq 2 ]]
                 then
-                elif [[ $set_part_answer=="3"]]
+                    echo "part 2"
+                elif [[ $set_part_answer -eq 3 ]]
                 then
+                    echo "part 3"
                 else
+                    echo "no part"
                 fi
             }
 
             # Get Password of root profile
+            # used in Ask Function
             pswd_root_info00(){
 
                 read -p " Which password would you apply to Root Account? Take Care about the stenght of it." root_pswd   
@@ -106,6 +117,7 @@ set_part_answer=0
             }
             
             # Get IP fix
+            # used in Ask Function
             ip_fix_info00(){
                 
                 # Display Info
@@ -155,10 +167,11 @@ set_part_answer=0
                 
                 # with the var $set_part_answer the script will lauch a function for get informations
                 # if 1
-                if [[ $set_part_answer=="1"]]
+                if [[ $set_part_answer -eq 1 ]]
                 then
 
                     basic_ask(){
+                    
                         # ask if it needed to set the root password
                         read -p " Do you need to set a new password for root user ? [y/n]  " root_pswd_answer
                         
@@ -168,14 +181,16 @@ set_part_answer=0
                     # ask informations for IP addr
                     ip_fix_info00
                     
-                }
+                    }
+
+                basic_ask
 
                 # if 2
-                if [[ $set_part_answer=="2"]]
+                if [[ $set_part_answer -eq 2 ]]
                 then
 
                 # if 3
-                if [[ $set_part_answer=="3"]]
+                if [[ $set_part_answer -eq 3 ]]
                 then
 
                 fi
@@ -358,7 +373,7 @@ set_part_answer=0
                     # Prometeus [ work in progress ]
                 Basic_Tools00
                 # add mdp for root
-                if [[ $root_pswd_answer=="y"]];
+                if [[ $root_pswd_answer = "y" ]]
                 then
                     echo " [ Set new root password ]  "
                     sleep 2
@@ -367,13 +382,13 @@ set_part_answer=0
                     sleep 3
                     pswd_root_apply00
 
-                elif [[ $root_pswd_answer=="n"]];
+                elif [[ $root_pswd_answer = "n" ]]
                 then
                     echo " [ No modification of root password ] "
                     # Pass it
                     sleep 3
                 else
-                    
+                    echo "pass"
                 fi
                 #
             }
@@ -391,23 +406,27 @@ set_part_answer=0
 check_os_package_manager00
 
 
+set_part
+
 # Ask informations
-Ask
+#Ask
 
 
-
-Basic01
+#Basic01
 
 
 
 # End Function
 # It will be launch after every getting information
 Applying_Script(){
-    if [[ $set_part_answer=='1']]
+    if [[ $set_part_answer -eq 1 ]]
     then
-    if [[ $set_part_answer=='2']]
+
+        Basic01
+        
+    if [[ $set_part_answer -eq 2 ]]
     then
-    if [[ $set_part_answer=='3']]
+    if [[ $set_part_answer -eq 3 ]]
     then
 
     fi

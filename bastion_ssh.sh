@@ -431,3 +431,5 @@ Applying_Script(){
 
     fi
 }
+
+Applying_Script

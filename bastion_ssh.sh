@@ -427,17 +427,18 @@ set_part
 # End Function
 # It will be launch after every getting information
 Applying_Script(){
+
     if [[ $set_part_answer -eq 1 ]]
     then
 
         Basic01
         
-    if [[ $set_part_answer -eq 2 ]]
+    elif [[ $set_part_answer -eq 2 ]]
     then
         
         echo "part 2"
 
-    if [[ $set_part_answer -eq 3 ]]
+    elif [[ $set_part_answer -eq 3 ]]
     then
 
         echo "part 3"
@@ -447,6 +448,7 @@ Applying_Script(){
         echo "OOBE Applying"
 
     fi
-}
+
+    }
 
 Applying_Script

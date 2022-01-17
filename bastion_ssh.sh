@@ -247,8 +247,7 @@ set_part_answer=0
                 # route | grep $int > result_gtw_for_int.txt
                 ip addr | grep inet 
                 ip route | grep $int_ 
-                resolvectl status  
-
+                
                 # Print Result to User
                 sleep 5
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-############################ Schedule 
+############################ Schedule
 
 # Basic Settings
     # Update
@@ -10,7 +10,7 @@
         # tmux
         # netplan.io
         # cockpit
-        # tree 
+        # tree
         # python3
         # open-ssh-server
         # Prometeus [ work in progress ]
@@ -186,13 +186,15 @@ set_part_answer=0
                 basic_ask
 
                 # if 2
-                if [[ $set_part_answer -eq 2 ]]
+                elif [[ $set_part_answer -eq 2 ]]
                 then
 
                 # if 3
-                if [[ $set_part_answer -eq 3 ]]
+                elif [[ $set_part_answer -eq 3 ]]
                 then
 
+                else
+                    
                 fi
             }
 

@@ -434,8 +434,17 @@ Applying_Script(){
         
     if [[ $set_part_answer -eq 2 ]]
     then
+        
+        echo "part 2"
+
     if [[ $set_part_answer -eq 3 ]]
     then
+
+        echo "part 3"
+
+    else
+
+        echo "OOBE Applying"
 
     fi
 }

@@ -189,12 +189,18 @@ set_part_answer=0
                 elif [[ $set_part_answer -eq 2 ]]
                 then
 
+                    echo "part 2"
+
                 # if 3
                 elif [[ $set_part_answer -eq 3 ]]
                 then
 
+                    echo "part 3"
+
                 else
-                    
+
+                    echo "OOBE"
+
                 fi
             }
 

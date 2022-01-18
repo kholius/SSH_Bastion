@@ -108,6 +108,9 @@ set_part_answer=0
                 fi
             }
 
+
+            ################# # Get Info Part 1
+
             # Get Password of root profile
             # used in Ask Function
             pswd_root_info00(){
@@ -161,7 +164,9 @@ set_part_answer=0
 
             }
 
+            ################# # Get Info Part 2
 
+            
             ###### Get information
             Ask(){
                 
@@ -345,7 +350,7 @@ set_part_answer=0
                 echo $os_package_manager1
                 # Tools via apt 
                 # For each tool in the list, you install and check the package list
-                for tool in {vim, tmux, netplan.io, cockpit, tree, python3, open-ssh-server, python3-pip, screenfetch}
+                for tool in vim tmux netplan.io cockpit tree python3 open-ssh-server python3-pip screenfetch
                 do
 
                     $os_package_manager1 install $tool $val
@@ -449,5 +454,6 @@ Applying_Script(){
     fi
 
     }
+
 
 Applying_Script

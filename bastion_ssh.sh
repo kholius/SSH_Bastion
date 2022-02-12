@@ -85,6 +85,7 @@ set_part_answer=0
         ############################ Core Function
             ################################### Get Information
             
+            # Set part 
             set_part(){
 
                 read -p " Which part would you want set? 1: Bastion Set; 2: Endpoint Set; 3: Bastion launch " set_part_answer
@@ -106,6 +107,108 @@ set_part_answer=0
                 else
                     echo "no part"
                 fi
+            }
+
+                        
+            # Check Internet
+            check_internet(){
+
+                # ping test with 5 request 
+                echo " Checking Internet "
+                ping 8.8.8.8 -c 5
+                echo $?
+                # the ping's result make a statement 0 = Ok ; 1 = Error ; OOBE 
+                if [[ $? -eq 0 ]]
+                then
+                    echo " Ping -OK "
+                    echo " Let's try a HTTPS request "
+                    icmp_stat=0
+
+                    if nc -zw1 google.com 443
+                    then
+                        
+                        https_stat=0
+                        echo " Your Internet access is OK "
+                        internet_stat=0
+                        echo $internet_stat
+                        echo $https_stat > https_result.txt
+
+                    else
+
+                        https_stat=1
+                        echo " HTTPS request failed "
+                        internet_stat=100
+                        echo $https_stat > https_result.txt
+
+                    fi
+
+                elif [[ $? -eq 1 ]]
+                then
+
+                    echo " Your Internet access is unusual "
+                    internet_stat=100
+                    echo $internet_stat
+                    icmp_stat=1
+                    echo $icmp_stat > icmp_result.txt
+
+                    echo " Maybe ICMP:8 is denied... "
+                    echo " Right, let's try a HTTPS request "
+                    if nc -zw1 google.com 443
+                    then
+                        
+                        echo " Your Internet access is OK "
+                        https_stat=0
+                        internet_stat=0
+                        echo $internet_stat
+                        echo $https_stat > https_result.txt
+                    
+                    else
+
+                        https_stat=1
+                        echo " HTTPS request failed "
+                        echo $https_stat > https_result.txt
+                        internet_stat=100
+                        
+                    fi
+                else
+
+                echo "[[ OOBE ]]"
+                internet_stat=50
+                icmp_stat=2
+                https_stat=2
+
+                echo $icmp_stat > icmp_result.txt
+                echo $https_stat > https_result.txt
+                fi
+
+                # take acttxtn if there is no internet connextxtn or OOBE
+                if [[ $internet_stat -eq 100 ]]
+                then
+                    echo " WARNING, No Internet Connextxtn "
+                    echo " Script will go down "
+                    sleep 10
+
+                    # exit from script
+                    exit
+
+                elif [[ $internet_stat -eq 50 ]]
+                then
+                    echo " OOBE "
+                    echo " Reboot Inbound "
+                    sleep 8
+
+                    # reboot
+                    reboot
+
+                else
+                
+                echo " OOBE "
+                fi
+
+                https_rapport=$(cat https_result.txt)
+                icmp_rapport=$(cat icmp_result.txt)
+
+
             }
 
 
@@ -166,7 +269,103 @@ set_part_answer=0
 
             ################# # Get Info Part 2
 
+            ssh_profile(){
+
+
+                # need a ssh profile? y n > bastion_ask
+                if [[ $need_of_ssh_config_answer=="y" ]]
+                then
+                    # y
+                    # which name ?
+                    read -p " Which profile do you want set ? " name_to_check
+                        # check if the name exist (with home dir)
+                        check1=$(ls /home/ | grep $name_to_check | echo $?)
+                        #check2=$()
+                            # if exist 
+                            if [[ $check1 -eq 0 ]]
+                            then
+
+                                user00=$name_to_check 
+                                
+                                # creation of ECDSA key in the home/[name_user]/.ssh
+                                mkdir /home/$user00/.ssh | grep /home/$user00/.ssh
+                                ssh-keygen -t ecdsa -b 521 -f /home/$user00/.ssh/bastion-key-00
+                                
+                                # show our keys 
+                                cat /home/$user00/.ssh/bastion-key-00
+                                cat /home/$user00/.ssh/bastion-key-00.pub 
+
+                                # do we need to add some host ? y n
+                                
+                                    # y
+                                            # how many ?
+                                                # until $num
+                                                    # which addr need we add [ or name ] ?
+                                                        # creation of array [array_name=()]
+                                                        # add answer on a array [ array_name+=("$addr")]
+                                    # n
+                                        # pass
+                            # if don't exists
+                            elif [[ $check1 -eq 0 ]]
+                            then
+                                    # creation of profile
+                                        # name ?
+                                        # password ?
+                                            # check
+                                        # creation of ECDSA key in the home/[name_user]/.ssh
+                                        # do we need to add some host ? y n
+                                            # y
+                                                # how many ?
+                                                    # until $num
+                                                        # which addr need we add [ or name ] ?
+                                                            # creation of array [array_name=()]
+                                                            # add answer on a array [ array_name+=("$addr")]
+                                            # n
+                                                # pass
+                            else
+                              
+                                echo " [OOBE] "
+                            
+                            fi
+                elif [[ $need_of_ssh_config_answer=="n" ]]
+                then
+                    # n
+                        # pass
+                
+
+                else
+
+                    echo " [OOBE] "
+
+                fi
             
+            # apply ssh-copy-id # ???
+
+
+            }
+
+            #ssh_conf_info(){
+                # ask information for every kind of argument and put each on var
+            #}
+
+            #ssh_conf_apply(){
+                # apply every arg from ssh_conf_info
+            #}
+
+            host_file(){
+                # add host to hosts file
+                # or 
+                # check/set a DNS serv
+            }
+
+            pam_set(){
+                # set the deamon of authentification + autho
+                # set /etc/pam.d
+            }
+
+            cron_ssh_agent(){}
+
+
             ###### Get information
             Ask(){
                 
@@ -190,12 +389,31 @@ set_part_answer=0
 
                 basic_ask
 
+                bastion_ask(){
+                        # need ssh conf?
+                        read -p " Do you need to configure a SSH config ? [y/n] : " need_of_ssh_config_answer
+                        case $need_of_ssh_config_answer in
+                            y)
+                                echo "[Let's set the SSH profile.] "
+                                ssh_profile
+                                ;;
+                            n)
+                                echo "[OK no SSH profile...]"
+                                sleep 5
+                                ;;
+                            *)
+                                echo " [OOBE] "
+                        esac
+                        # need hosts file modification?
+                        # right pam.d? 
+                    }
+
                 # if 2
                 elif [[ $set_part_answer -eq 2 ]]
                 then
-
+                
                     echo "part 2"
-
+                    
                 # if 3
                 elif [[ $set_part_answer -eq 3 ]]
                 then
@@ -350,7 +568,7 @@ set_part_answer=0
                 echo $os_package_manager1
                 # Tools via apt 
                 # For each tool in the list, you install and check the package list
-                for tool in vim tmux netplan.io cockpit tree python3 open-ssh-server python3-pip screenfetch
+                for tool in vim tmux netplan.io cockpit tree python3 open-ssh-server python3-pip screenfetch git nano 
                 do
 
                     $os_package_manager1 install $tool $val
@@ -406,8 +624,27 @@ set_part_answer=0
             }
 
 
+            # Bastion Side Settings
+            Bastion_set_side(){
+                # Bastion set side
+                # Setting everything for a bastion 
+                    # check internet
+                    check_internet
+                        # $internet_stat=0 -- OK  100  -- KO
 
+                    # catch the openssh package
+                    sudo $os_package_manager1 list open-ssh-server
+                    # create a spécific ssh profile or not
+                        # key gen
+                        # key copy id
 
+                    # update host file if there is not DNS
+                    # create an ECDSA key on the ssh profile
+                    # modify pam.d if needed
+                    # create an config file in /home/.ssh/
+                    # add on the crontab " creation of ssh-agent "
+
+            }
 
 
 
@@ -434,9 +671,15 @@ Applying_Script(){
 
     if [[ $set_part_answer -eq 1 ]]
     then
-
+        echo " part 1 "
+        echo " Bastion Set Side "
+        
+        echo " Basic setting Inbound "
         Basic01
         
+        echo " Bastion Setting Inbound "
+
+
     elif [[ $set_part_answer -eq 2 ]]
     then
         

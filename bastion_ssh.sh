@@ -12,6 +12,7 @@
         # cockpit
         # tree
         # python3
+        # cmatrix
         # open-ssh-server
         # Prometeus [ work in progress ]
     # add mdp for root
@@ -280,38 +281,88 @@ set_part_answer=0
                     read -p " Which profile do you want set ? " name_to_check
                         # check if the name exist (with home dir)
                         check1=$(ls /home/ | grep $name_to_check | echo $?)
-                        #check2=$()
                             # if exist 
+                            # Key
                             if [[ $check1 -eq 0 ]]
                             then
-
-                                user00=$name_to_check 
-                                
+                                # Key
+                                user00=$name_to_check
+                                #
                                 # creation of ECDSA key in the home/[name_user]/.ssh
-                                mkdir /home/$user00/.ssh | grep /home/$user00/.ssh
+                                mkdir /home/$user00/.ssh
+                                ll /home/$user00/ | grep .ssh
                                 ssh-keygen -t ecdsa -b 521 -f /home/$user00/.ssh/bastion-key-00
-                                
+                                #
                                 # show our keys 
                                 cat /home/$user00/.ssh/bastion-key-00
-                                cat /home/$user00/.ssh/bastion-key-00.pub 
+                                cat /home/$user00/.ssh/bastion-key-00.pub
+
+                                # clean var
+                                user00=""
 
                                 # do we need to add some host ? y n
-                                
+                                #
+                                read -p " Do you need to add some Endpoint's Host ? [y/n] " need_to_add_endpoint
                                     # y
+                                    case $need_to_add_endpoint in
+                                        y)
+                                            
                                             # how many ?
-                                                # until $num
-                                                    # which addr need we add [ or name ] ?
-                                                        # creation of array [array_name=()]
-                                                        # add answer on a array [ array_name+=("$addr")]
+                                            read -p " How many Hosts/Endpoints do you want to add ? [int] " num_of_endpoint_to_add
+                                                    # until $num
+                                                    until [ $index_number_endpoint -eq $num_of_endpoint_to_add]
+                                                    do
+                                                        # which addr need we add [ or name ] ?
+                                                        read -p " Which ID of your endpoint will you use? [ IP_addr / DNS ref ] " host_id_adding
+                                                            # creation of array [array_name=()]
+                                                            # add answer on a array [ array_name+=("$addr")]
+                                                            host_list+=("$host_is_adding")
+                                                    done
+                                                    # for each host in the array 
+                                                    for host in $host_list
+                                                    do
+                                                        # ssh-copy-id (maybe with sshpass??)
+                                                        ssh-copy-id -i /home/$user00/.ssh/bastion-key-00 $user@$host
+                                                    
+                                                    done
+                                        ;;
+
                                     # n
+                                        n)
                                         # pass
+                                            echo " no endpoint added."
+                                            echo " denied by user "
+                                        ;;
+                                        
+                                        *)
+                                            echo " no endpoint added."
+                                            echo " denied by System "
+                                            echo " OOBE "
+                                        ;;
+                                    esac
                             # if don't exists
-                            elif [[ $check1 -eq 0 ]]
+                            elif [[ $check1 -eq 1 ]]
                             then
-                                    # creation of profile
+                                # Profil + Key
+                                    # creation of profil
+                                    echo " Let's create your user profile wich going to be used for ssh connexions. "
                                         # name ?
+                                        read -p " Set a name: " name_profile_to_create_for_ssh_profile
                                         # password ?
-                                            # check
+                                        echo " Attention critical data /!\ "
+                                        sleep 2
+                                        read -p " Set a Password: " password_profile_to_create_for_ssh_profile
+                                        # creation_of_profile
+                                        useradd $name_profile_to_create_for_ssh_profile
+                                        if [[ $(cat /etc/shadow | grep $name_profile_to_create_for_ssh_profile)==0 ]]
+                                        then
+                                            echo ' Profile Created '
+                                        fi
+                                        echo "$name_profile_to_create_for_ssh_profile:$password_profile_to_create_for_ssh_profile" | chpasswd
+                                        # check_profile
+                                        cat /etc/shadow | grep $name_profile_to_create_for_ssh_profile
+                                        # clean password var
+                                        $password_profile_to_create_for_ssh_profile=""
                                         # creation of ECDSA key in the home/[name_user]/.ssh
                                         # do we need to add some host ? y n
                                             # y
@@ -568,7 +619,7 @@ set_part_answer=0
                 echo $os_package_manager1
                 # Tools via apt 
                 # For each tool in the list, you install and check the package list
-                for tool in vim tmux netplan.io cockpit tree python3 open-ssh-server python3-pip screenfetch git nano 
+                for tool in vim tmux netplan.io cockpit tree python3 open-ssh-server python3-pip screenfetch git nano sshpass
                 do
 
                     $os_package_manager1 install $tool $val

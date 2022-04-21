@@ -1,5 +1,6 @@
 #!/bin/bash
 
+sleep 5
 
 echo "
 Welcome to the basic.sh script;
@@ -334,6 +335,64 @@ Basic_Tools00(){
 
 }
 
+# Getting Information " If needed " Static IP and/or a root password
+Get_Info(){
+
+    read -p "Need to set an IP configuration (static)? [y/n]  " Get_infoip
+    sleep 1
+    if [[$Get_infoip=="y"]]
+    then
+        sleep 1
+        ip_fix_info00
+        indexg="ok"
+    elif [[$Get_infoip=="n"]]
+    then
+        sleep 1
+        echo "denied by user."
+    else
+        echo " OOBE - Get_Info - Applying the answer > Get_infoip "
+    fi
+
+    read -p "Need to set a new password for root account ? [y/n]  " Get_inforoot
+    sleep 1
+    if [[$Get_inforoot=="y"]]
+    then
+        sleep 1
+        pswd_root_info00
+        indexh="ok"
+    elif [[$Get_inforoot=="n"]]
+    then
+        sleep 1
+        echo "denied by user."
+    else
+        echo " OOBE - Get_Info - Applying the answer > Get_inforoot "
+    fi
+
+    indexf="ok"
+}
+
+
+Apply_Info(){
+
+    if [[$indexf=="ok"]]
+    then
+
+        if [[$indexg=="ok"]]
+        then
+            ip_fix_apply00
+        fi
+
+        if [[$indexh=="ok"]]
+        then
+            pswd_root_apply00
+        fi
+
+    else
+
+    fi
+
+}
+
 ##################################### Applyment ######################################
 
 #1
@@ -343,12 +402,10 @@ check_internet
 sleep 5
 
 #2
-ip_fix_info00
-pswd_root_info00
+Get_Info
 
 #3
-ip_fix_apply00
-pswd_root_apply00
+Apply_Info
 update00
 Basic_Tools00
 update00

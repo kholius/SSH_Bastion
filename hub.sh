@@ -155,7 +155,7 @@ case $input_prog in
     bastion)
         # check if the secondary input is empty or not
         #echo $input_side
-        if [[$input_side==""]]
+        if [[ $input_side=="" ]]
         then
             echo " You missed the second argument ! "
             echo " You Have to choose between : node and endpoint "
@@ -182,9 +182,17 @@ case $input_prog in
         case $input_side in
 
             node)
+                ls | grep /dep/bastion_node.sh
+                cd dep/
+                sudo chmod +x bastion_node.sh
+                sudo bash bastion_node.sh
             ;;
 
             endpoint)
+                ls | grep /dep/bastion_endpoint.sh
+                cd dep/
+                sudo chmod +x bastion_endpoint.sh
+                sudo bash bastion_endpoint.sh
             ;;
 
         esac

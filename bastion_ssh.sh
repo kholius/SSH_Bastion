@@ -619,10 +619,10 @@ set_part_answer=0
                 echo $os_package_manager1
                 # Tools via apt 
                 # For each tool in the list, you install and check the package list
-                for tool in vim tmux netplan.io cockpit tree python3 open-ssh-server python3-pip screenfetch git nano sshpass
+                for tool in vim tmux htop cockpit tree python3 python3.8 python3-pip screenfetch git nano sshpass 
                 do
 
-                    $os_package_manager1 install $tool $val
+                    $os_package_manager1 install $tool -y
                     $os_package_manager1 list $tool
 
                 done

@@ -7,7 +7,6 @@
     # catch the openssh package
     # create a spécific ssh profile or not
     # pam.d
-    # 
     # allow / deny file
 
 ################################# Functions
@@ -186,4 +185,18 @@ check_internet(){
 
                 #https_rapport=$(cat https_result.txt)
                 #icmp_rapport=$(cat icmp_result.txt)
+}
+
+# check SSH pkg
+check_ssh(){
+
+    systemctl status sshd | grep running
+    if [[ $? -eq 0 ]]
+    then
+        
+        echo " SSH's deamon is OK and Run "
+
+    elif [[ $? -eq 1 ]]
+    then
+    fi
 }
